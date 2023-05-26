@@ -21,6 +21,7 @@ export class GameComponent implements OnInit {
   pickCardAnimation = false;
   currentCard = '';
   public game: any = new Game();
+  gameId: any;
 
 
 
@@ -46,10 +47,11 @@ export class GameComponent implements OnInit {
 
     this.route.params.subscribe((params) => {
       console.log(params['id']);
+      this.gameId = params['id'];
 
       this.firestore
       .collection('games')
-      .doc(params['id'])
+      .doc(this.gameId)
       .valueChanges()
       .subscribe((game: any) => {
         this.game.currentPlayer = game.currentPlayer;
@@ -74,12 +76,14 @@ export class GameComponent implements OnInit {
       this.currentCard = this.game.stack.pop();
       this.pickCardAnimation = true;
       this.game.playedCards.push(this.currentCard);
+      this.saveGame();
       this.game.currentPlayer++;
       this.game.currentPlayer = this.game.currentPlayer % this.game.players.length
 
 
       setTimeout(() => {
         this.pickCardAnimation = false;
+        this.saveGame();
       }, 1500);
     }
   }
@@ -91,8 +95,17 @@ export class GameComponent implements OnInit {
     dialogRef.afterClosed().subscribe(name => {
       if (name && name.length > 0) {
         this.game.players.push(name);
+        this.saveGame();
       }
     });
+  }
+
+
+  saveGame() {
+    this.firestore
+      .collection('games')
+      .doc(this.gameId)
+      .update(this.game.toJson())
   }
 
 }
