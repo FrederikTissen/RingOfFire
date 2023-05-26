@@ -7,6 +7,7 @@ import { Firestore, addDoc, collection, collectionData, doc, getFirestore, setDo
 import { Observable } from 'rxjs';
 import { initializeApp } from '@angular/fire/app';
 import { ActivatedRoute } from '@angular/router';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 
 
@@ -21,30 +22,22 @@ export class GameComponent implements OnInit {
   currentCard = '';
   public game: any = new Game();
 
-  private firestore: Firestore = inject(Firestore);
 
-  public games$: Observable<any[]>;
-  public aCollection: any;
 
-  firebaseConfig = {
-    apiKey: "AIzaSyDUbOVyCWZinw6rlIvaeG6ePvtbHTUquZU",
-    authDomain: "ring-of-fire-7736f.firebaseapp.com",
-    projectId: "ring-of-fire-7736f",
-    storageBucket: "ring-of-fire-7736f.appspot.com",
-    messagingSenderId: "400604176139",
-    appId: "1:400604176139:web:9d7996d41798f577524c0e"
-  };
+  //public games$: Observable<any[]>;
+  //public aCollection: any;
 
-  private app;
-  private db;
+
+  //private app;
+  //private db;
 
 
 
-  constructor(private route: ActivatedRoute, public dialog: MatDialog) {
-    this.aCollection = collection(this.firestore, 'games');
-    this.games$ = collectionData(this.aCollection);
-    this.app = initializeApp(this.firebaseConfig);
-    this.db = getFirestore(this.app);
+  constructor(private route: ActivatedRoute, public dialog: MatDialog, private firestore: AngularFirestore) {
+    //this.aCollection = collection(this.firestore, 'games');
+    //this.games$ = collectionData(this.aCollection);
+    //this.app = initializeApp(this.firebaseConfig);
+    //this.db = getFirestore(this.app);
   }
 
 
@@ -54,21 +47,25 @@ export class GameComponent implements OnInit {
     this.route.params.subscribe((params) => {
       console.log(params['id']);
 
-
-
+      this.firestore
+      .collection('games')
+      .doc(params['id'])
+      .valueChanges()
+      .subscribe((game: any) => {
+        this.game.currentPlayer = game.currentPlayer;
+        this.game.currentCards = game.currentCards;
+        this.game.players = game.players;
+        this.game.stack = game.stack;
+        //console.log(game))
+      });
     });
-
-    //this.newGame();
 
   }
 
+  
 
-  async newGame() {
-    this.aCollection = await addDoc(collection(this.db, "games"), {
-      Spiel: this.game.toJson()
-    });
-    console.log(this.aCollection['id']);
-  }
+
+
 
 
 
@@ -79,7 +76,6 @@ export class GameComponent implements OnInit {
       this.game.playedCards.push(this.currentCard);
       this.game.currentPlayer++;
       this.game.currentPlayer = this.game.currentPlayer % this.game.players.length
-      this.newGame();
 
 
       setTimeout(() => {
