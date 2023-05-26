@@ -12,7 +12,6 @@ export class GameInfoComponent implements OnInit, OnChanges{
     this.card = '';
   }
 
-
   cardAction = [
     { title: 'Waterfall', description: 'Everyone has to start drinking at the same time. As soon as player 1 stops drinking, player 2 may stop drinking. Player 3 may stop as soon as player 2 stops drinking, and so on.' },
     { title: 'You', description: 'You decide who drinks' },
@@ -38,13 +37,10 @@ export class GameInfoComponent implements OnInit, OnChanges{
 
   ngOnChanges(): void {
     if (this.card) {
-      console.log('Current card is:', this.card);
       let splittedCardNumber = this.card.split('_')[1];
       let cardNumber = +splittedCardNumber.split('.')[0];
       this.title = this.cardAction[cardNumber - 1].title;
       this.description = this.cardAction[cardNumber - 1].description;
     }
-
   }
-
 }

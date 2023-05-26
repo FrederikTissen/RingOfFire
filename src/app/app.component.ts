@@ -10,16 +10,8 @@ import { Component, inject, OnInit } from '@angular/core';
 })
 export class AppComponent  {
 
-
-
   ngOnInit(): void {
-    /*this.games$.subscribe((game) => {
-      console.log('Game update', game);
-      /*this.newGame();
-    });*/
   }
-
-
 }
 
 

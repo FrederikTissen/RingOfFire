@@ -11,18 +11,10 @@ import { Game } from 'src/models/game';
 
 export class StartsccreenComponent implements OnInit {
 
-  constructor(private router: Router, private firestore: AngularFirestore) { }
-
+  constructor(private router: Router, private firestore: AngularFirestore) {}
 
   ngOnInit(): void {
   }
-
-  /* async newGame() {
-     this.aCollection = await addDoc(collection(this.db, "games"), {
-       Spiel: this.game.toJson()
-     });
-     console.log(this.aCollection['id']);
-   }*/
 
   newGame() {
     let game: any = new Game();
@@ -33,5 +25,4 @@ export class StartsccreenComponent implements OnInit {
         this.router.navigateByUrl('game/' + gameInfo.id)
   );
 }
-
 }
